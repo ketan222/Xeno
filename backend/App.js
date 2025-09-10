@@ -1,7 +1,13 @@
 import express from "express";
+import AuthRoute from "./routes/AuthRoute.js";
+import cookieParser from "cookie-parser";
 
-const App = express();
+const app = express();
 
-App.use(express.json());
+app.use(express.json());
+app.use(cookieParser());
 
-export default App;
+app.use("/api/auth", AuthRoute);
+// app.use("/api/auth", AuthRoute);
+
+export default app;
