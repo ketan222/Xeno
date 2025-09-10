@@ -1,0 +1,58 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+config.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Vite / React build
+dist/
+build/
+
+# Tailwind / PostCSS cache (if any)
+.cache/
+.postcssrc.js
+
+# Vite cache
+node_modules/.vite/
+
+# MacOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# MySQL dump files (optional)
+*.sql
+*.dump
+
+# Misc
+*.bak
+*.tmp
+*.swp
