@@ -21,7 +21,7 @@ async function startServer() {
     console.log("Database connected");
 
     await db.query(`
-    DROP TABLE IF EXISTS orders, customers`);
+    DROP TABLE IF EXISTS orders, customers, products`);
 
     console.log("Dropped existing customers table");
 
@@ -70,16 +70,32 @@ async function startServer() {
     await db.query(`
       CREATE TABLE IF NOT EXISTS products (
         id BIGINT PRIMARY KEY,
-        store_id INT,
         title VARCHAR(255),
+        description text,
         price DECIMAL(10,2),
+        compare_at_price DECIMAL(10,2),
+        taxable BOOLEAN,
+        inventory_item_id BIGINT,
         inventory_quantity INT,
         created_at DATETIME,
-        updated_at DATETIME,
-        FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
+        updated_at DATETIME
       );
     `);
 
+    // Pictures table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS pictures (
+        id BIGINT PRIMARY KEY,             -- Shopify image ID
+        product_id BIGINT,
+        src VARCHAR(500),
+        alt VARCHAR(255),
+        position INT,
+        width INT,
+        height INT,
+        created_at DATETIME,
+        updated_at DATETIME,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+      );`);
     // Orders table
     await db.query(`
       CREATE TABLE IF NOT EXISTS orders (
