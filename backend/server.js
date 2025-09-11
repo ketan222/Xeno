@@ -21,7 +21,7 @@ async function startServer() {
     console.log("Database connected");
 
     await db.query(`
-    DROP TABLE IF EXISTS orders, customers, products`);
+    DROP TABLE IF EXISTS orders, customers, pictures, products, stores, users;`);
 
     console.log("Dropped existing customers table");
 
@@ -96,6 +96,7 @@ async function startServer() {
         updated_at DATETIME,
         FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
       );`);
+
     // Orders table
     await db.query(`
       CREATE TABLE IF NOT EXISTS orders (
