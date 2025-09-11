@@ -91,7 +91,7 @@ export const login = async (req, res) => {
     }
 
     // Creating jwt token
-    console.log(user[0].id);
+    // console.log(user[0].id);
     const token = jwtSignUser(user[0].id);
 
     // Set cookie options

@@ -20,6 +20,11 @@ async function startServer() {
 
     console.log("Database connected");
 
+    await db.query(`
+    DROP TABLE IF EXISTS orders, customers`);
+
+    console.log("Dropped existing customers table");
+
     // Users table
     await db.query(`
       CREATE TABLE IF NOT EXISTS users (
@@ -46,15 +51,19 @@ async function startServer() {
     // Customers table
     await db.query(`
       CREATE TABLE IF NOT EXISTS customers (
-        id BIGINT PRIMARY KEY,
-        store_id INT,
-        email VARCHAR(255),
-        first_name VARCHAR(255),
-        last_name VARCHAR(255),
-        created_at DATETIME,
-        updated_at DATETIME,
-        FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
-      );
+      id BIGINT PRIMARY KEY,             -- Shopify customer ID
+      email VARCHAR(255),
+      first_name VARCHAR(255),
+      last_name VARCHAR(255),
+      total_spent DECIMAL(10,2) DEFAULT 0,
+      orders_count INT DEFAULT 0,
+      last_order_id BIGINT,
+      phone VARCHAR(50),
+      currency VARCHAR(10),
+      created_at DATETIME,
+      updated_at DATETIME
+    );
+
     `);
 
     // Products table
