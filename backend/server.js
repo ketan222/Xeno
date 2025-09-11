@@ -101,13 +101,17 @@ async function startServer() {
     await db.query(`
       CREATE TABLE IF NOT EXISTS orders (
         id BIGINT PRIMARY KEY,
-        store_id INT,
         customer_id BIGINT,
+        customer_email VARCHAR(255),
+        name VARCHAR(255),
+        order_number INT,
         total_price DECIMAL(10,2),
+        subtotal_price DECIMAL(10,2),
+        total_tax DECIMAL(10,2),
+        currency VARCHAR(10),
         status VARCHAR(50),
         created_at DATETIME,
         updated_at DATETIME,
-        FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE,
         FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL
       );
     `);

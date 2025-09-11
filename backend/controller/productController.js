@@ -2,12 +2,11 @@ export const syncProducts = async (req, res) => {
   try {
     const db = req.app.locals.db;
 
-    // fetch products from Shopify
-
     const result = await db.query(`
-            show columns from products
-        `);
-    console.log(result[0].forEach((ele) => console.log(ele.Field)));
+      show columns from products
+      `);
+    // console.log(result[0].forEach((ele) => console.log(ele.Field)));
+    // fetch products from Shopify
     const response = await fetch(
       `
         
