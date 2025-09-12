@@ -12,11 +12,11 @@ export const signup = async (req, res) => {
   try {
     const db = req.app.locals.db;
 
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res
-        .status(400)
-        .json({ status: "Email and password are required" });
+    const { email, password, store_domain, access_token } = req.body;
+    if (!email || !password || !store_domain || !access_token) {
+      return res.status(400).json({
+        status: "Email, password, store domain and access token are required",
+      });
     }
 
     // Check if user exists
@@ -28,13 +28,29 @@ export const signup = async (req, res) => {
       return res.status(400).json({ status: "User already exists" });
     }
 
+    // Check if tenant exists
+    let [tenant] = await db.query(
+      "SELECT * FROM tenants WHERE shop_domain = ?",
+      [store_domain]
+    );
+    if (tenant.length > 0) {
+      return res.status(400).json({ status: "Tenant already exists" });
+    }
+
+    // Insert new tenant
+    const [tenantResult] = await db.query(
+      "INSERT INTO tenants (shop_domain, access_token) VALUES (?, ?)",
+      [store_domain, access_token]
+    );
+    const tenantId = tenantResult.insertId;
+
     // Hash password
     const hashedPassword = bcrypt.hashSync(password, 10);
 
     // Insert new user
     const [result] = await db.query(
-      "INSERT INTO users (email, password) VALUES (?, ?)",
-      [email, hashedPassword]
+      "INSERT INTO users (email, password, tenant_id) VALUES (?, ?, ?)",
+      [email, hashedPassword, tenantId]
     );
 
     // Creating jwt token
@@ -56,6 +72,7 @@ export const signup = async (req, res) => {
     res.status(201).json({
       status: "User created successfully",
       userId: result.insertId,
+      token,
     });
   } catch (error) {
     console.error(error);

@@ -10,6 +10,7 @@ router.get("/status", (req, res) => {
 router.post("/signup", signup);
 
 router.post("/login", protect, login);
+
 // router.post("/signup", (req, res) => {
 
 // }

@@ -1,6 +1,6 @@
 import express from "express";
 import { syncOrders } from "../controller/orderController.js";
-
+import { protect } from "../controller/userController.js";
 const router = express.Router();
 
 router.get("/status", (req, res) => {
@@ -8,6 +8,6 @@ router.get("/status", (req, res) => {
   res.status(200).json({ status: "orders route ok" });
 });
 
-router.post("/syncOrders", syncOrders);
+router.post("/syncOrders", protect, syncOrders);
 
 export default router;

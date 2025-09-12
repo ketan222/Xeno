@@ -2,13 +2,22 @@ export const syncCustomers = async (req, res) => {
   try {
     const db = req.app.locals.db;
 
+    const tenant = await db.query(
+      `
+        SELECT * FROM tenants where id = ?
+      `,
+      [req.user.tenant_id]
+    );
+
+    // console.log(tenant[0][0]);
+
     // fetch customers from Shopify
     const response = await fetch(
-      `${process.env.SHOPIFY_STORE}/admin/api/2023-10/customers.json`,
+      `${tenant[0][0].shop_domain}/admin/api/2023-10/customers.json`,
       {
         method: "GET",
         headers: {
-          "X-Shopify-Access-Token": process.env.SHOPIFY_TOKEN,
+          "X-Shopify-Access-Token": tenant[0][0].access_token,
           "Content-Type": "application/json",
         },
       }

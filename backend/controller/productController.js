@@ -5,16 +5,26 @@ export const syncProducts = async (req, res) => {
     const result = await db.query(`
       show columns from products
       `);
+
     // console.log(result[0].forEach((ele) => console.log(ele.Field)));
     // fetch products from Shopify
+
+    const tenant = await db.query(
+      `
+        SELECT * FROM tenants where id = ?
+      `,
+      [req.user.tenant_id]
+    );
+
+    // console.log(tenant[0][0]);
     const response = await fetch(
       `
         
-        ${process.env.SHOPIFY_STORE}/admin/api/2023-10/products.json`,
+        ${tenant[0][0].shop_domain}/admin/api/2023-10/products.json`,
       {
         method: "GET",
         headers: {
-          "X-Shopify-Access-Token": process.env.SHOPIFY_TOKEN,
+          "X-Shopify-Access-Token": tenant[0][0].access_token,
           "Content-Type": "application/json",
         },
       }

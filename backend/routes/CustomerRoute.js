@@ -1,6 +1,6 @@
 import express from "express";
 import { syncCustomers } from "../controller/customersController.js";
-
+import { protect } from "../controller/userController.js";
 const router = express.Router();
 
 router.get("/status", (req, res) => {
@@ -8,6 +8,6 @@ router.get("/status", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-router.post("/syncCustomers", syncCustomers);
+router.post("/syncCustomers", protect, syncCustomers);
 
 export default router;

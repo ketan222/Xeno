@@ -2,18 +2,28 @@ export const syncOrders = async (req, res) => {
   try {
     const db = req.app.locals.db;
 
+    const tenant = await db.query(
+      `
+        SELECT * FROM tenants where id = ?
+      `,
+      [req.user.tenant_id]
+    );
+
+    // console.log(tenant[0][0]);
+
     // fetch orders from shopify
     const response = await fetch(
-      `${process.env.SHOPIFY_STORE}/admin/api/2023-10/orders.json?status=any`,
+      `${tenant[0][0].shop_domain}/admin/api/2023-10/orders.json?status=any`,
       {
         method: "GET",
         headers: {
-          "X-Shopify-Access-Token": process.env.SHOPIFY_TOKEN,
+          "X-Shopify-Access-Token": tenant[0][0].access_token,
           "Content-Type": "application/json",
         },
       }
     );
 
+    // checking the orders table structure
     // const cols = await db.query("SHOW COLUMNS FROM orders");
     // console.log(cols);
 
