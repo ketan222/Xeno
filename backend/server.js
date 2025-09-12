@@ -36,18 +36,6 @@ async function startServer() {
       );
     `);
 
-    // Stores table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS stores (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        store_name VARCHAR(255),
-        shopify_url VARCHAR(255),
-        shopify_token VARCHAR(255),
-        created_at DATETIME DEFAULT NOW(),
-        updated_at DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP
-      );
-    `);
-
     // Customers table
     await db.query(`
       CREATE TABLE IF NOT EXISTS customers (
