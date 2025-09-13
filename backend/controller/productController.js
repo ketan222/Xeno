@@ -6,7 +6,7 @@ export const syncProducts = async (req, res) => {
       show columns from products
       `);
 
-    // console.log(result[0].forEach((ele) => console.log(ele.Field)));
+    console.log(result[0].forEach((ele) => console.log(ele.Field)));
     // fetch products from Shopify
 
     const tenant = await db.query(
@@ -19,8 +19,7 @@ export const syncProducts = async (req, res) => {
     // console.log(tenant[0][0]);
     const response = await fetch(
       `
-        
-        ${tenant[0][0].shop_domain}/admin/api/2023-10/products.json`,
+        https://${tenant[0][0].shop_domain}/admin/api/2023-10/products.json`,
       {
         method: "GET",
         headers: {
@@ -40,9 +39,11 @@ export const syncProducts = async (req, res) => {
       // console.log("+++++++++++++++++++");
       const response = await db.query(
         `
-          INSERT INTO products (id, title, description, price, compare_at_price, taxable, inventory_item_id, inventory_quantity, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO products (id, tenant_id, title, description, price, compare_at_price, taxable, inventory_item_id, inventory_quantity, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           ON DUPLICATE KEY UPDATE
+          id = VALUES(id),
+          tenant_id = VALUES(tenant_id),
           title = VALUES(title),
           description = VALUES(description),
           price = VALUES(price),
@@ -55,6 +56,7 @@ export const syncProducts = async (req, res) => {
         `,
         [
           product.id,
+          req.user.tenant_id,
           product.title,
           product.body_html,
           product.variants[0]?.price + 0.0,
@@ -103,5 +105,51 @@ export const syncProducts = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ status: "Failed to sync products" });
+  }
+};
+
+export const getProducts = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const user = req.user;
+    const tenantId = user.tenant_id;
+    // console.log(tenantId);
+
+    // const tenant = await db.query(
+    //   `
+    //     SELECT * FROM tenants
+    //   `,
+    //   [tenantId]
+    // );
+
+    // console.log(tenant);
+
+    const products = await db.query(
+      `
+        SELECT * FROM products where tenant_id = ?
+      `,
+      [tenantId]
+    );
+
+    // console.log(customers);
+    for (let product of products[0]) {
+      const pictures = await db.query(
+        `
+          SELECT * FROM pictures where product_id = ?
+        `,
+        [product.id]
+      );
+      // console.log(pictures[0]);
+      product.pictures = pictures[0];
+    }
+
+    res.status(200).json({
+      status: "successfully returned the products",
+      products: products[0],
+    });
+    // res.status(200).json({ status: "successfully returned the products" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "Internal server error" });
   }
 };

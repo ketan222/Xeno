@@ -9,11 +9,11 @@ export const syncCustomers = async (req, res) => {
       [req.user.tenant_id]
     );
 
-    // console.log(tenant[0][0]);
+    console.log(tenant[0][0]);
 
     // fetch customers from Shopify
     const response = await fetch(
-      `${tenant[0][0].shop_domain}/admin/api/2023-10/customers.json`,
+      `https://${tenant[0][0].shop_domain}/admin/api/2023-10/customers.json`,
       {
         method: "GET",
         headers: {
@@ -32,12 +32,13 @@ export const syncCustomers = async (req, res) => {
       await db.query(
         `
         INSERT INTO customers
-        (id, email, first_name, last_name, total_spent, orders_count, last_order_id, phone, currency, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (id, email, first_name, last_name, tenant_id, total_spent, orders_count, last_order_id, phone, currency, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
           email = VALUES(email),
           first_name = VALUES(first_name),
           last_name = VALUES(last_name),
+          tenant_id = VALUES(tenant_id),
           total_spent = VALUES(total_spent),
           orders_count = VALUES(orders_count),
           last_order_id = VALUES(last_order_id),
@@ -50,6 +51,7 @@ export const syncCustomers = async (req, res) => {
           customer.email,
           customer.first_name,
           customer.last_name,
+          req.user.tenant_id,
           parseFloat(customer.total_spent) || 0,
           customer.orders_count || 0,
           customer.last_order_id || null,
@@ -68,5 +70,40 @@ export const syncCustomers = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: "Internal Server Error" });
+  }
+};
+
+export const getCustomers = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const user = req.user;
+    const tenantId = user.tenant_id;
+    // console.log(tenantId);
+
+    const tenant = await db.query(
+      `
+        SELECT * FROM tenants
+      `,
+      [tenantId]
+    );
+
+    // console.log(tenant);
+
+    const customers = await db.query(
+      `
+        SELECT * FROM customers where tenant_id = ?
+      `,
+      [tenantId]
+    );
+
+    // console.log(customers);
+
+    res.status(200).json({
+      status: "successfully returned the customers",
+      customers: customers[0],
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(200).json({ status: "cannot get customers" });
   }
 };

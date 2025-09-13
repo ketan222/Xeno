@@ -13,7 +13,7 @@ export const syncOrders = async (req, res) => {
 
     // fetch orders from shopify
     const response = await fetch(
-      `${tenant[0][0].shop_domain}/admin/api/2023-10/orders.json?status=any`,
+      `https://${tenant[0][0].shop_domain}/admin/api/2023-10/orders.json?status=any`,
       {
         method: "GET",
         headers: {
@@ -38,6 +38,7 @@ export const syncOrders = async (req, res) => {
           INSERT INTO orders (
             id ,
             customer_id ,
+            tenant_id, 
             customer_email ,
             name ,
             order_number ,
@@ -48,10 +49,11 @@ export const syncOrders = async (req, res) => {
             status,
             created_at ,
             updated_at)
-          VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
           ON DUPLICATE KEY UPDATE
             id = VALUES(id),
             customer_id = VALUES(customer_id),
+            tenant_id = VALUES(tenant_id),
             customer_email = VALUES(customer_email),
             name = VALUES(name),
             order_number = VALUES(order_number),
@@ -66,6 +68,7 @@ export const syncOrders = async (req, res) => {
         [
           order.id,
           order.customer.id,
+          req.user.tenant_id,
           order.customer.email,
           order.customer.first_name + " " + order.customer.last_name,
           order.order_number,
@@ -83,5 +86,41 @@ export const syncOrders = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: "Internal Server Error" });
+  }
+};
+
+export const getOrders = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const user = req.user;
+    const tenantId = user.tenant_id;
+    // console.log(tenantId);
+
+    const tenant = await db.query(
+      `
+        SELECT * FROM tenants
+      `,
+      [tenantId]
+    );
+
+    // console.log(tenant);
+
+    const orders = await db.query(
+      `
+        SELECT * FROM orders where tenant_id = ?
+      `,
+      [tenantId]
+    );
+
+    // console.log(customers);
+
+    res.status(200).json({
+      status: "successfully returned the customers",
+      orders: orders[0],
+    });
+    // res.status(200).json({ status: "success" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "Internal server Error" });
   }
 };

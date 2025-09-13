@@ -1,5 +1,8 @@
 import express from "express";
-import { syncCustomers } from "../controller/customersController.js";
+import {
+  syncCustomers,
+  getCustomers,
+} from "../controller/customersController.js";
 import { protect } from "../controller/userController.js";
 const router = express.Router();
 
@@ -9,5 +12,7 @@ router.get("/status", (req, res) => {
 });
 
 router.post("/syncCustomers", protect, syncCustomers);
+
+router.get("/getCustomers", protect, getCustomers);
 
 export default router;

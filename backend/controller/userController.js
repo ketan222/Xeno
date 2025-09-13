@@ -12,12 +12,19 @@ export const signup = async (req, res) => {
   try {
     const db = req.app.locals.db;
 
-    const { email, password, store_domain, access_token } = req.body;
+    let { email, password, store_domain, access_token } = req.body;
     if (!email || !password || !store_domain || !access_token) {
       return res.status(400).json({
         status: "Email, password, store domain and access token are required",
       });
     }
+
+    if (store_domain.startsWith("http://"))
+      store_domain = store_domain.slice(7);
+    if (store_domain.startsWith("https://"))
+      store_domain = store_domain.slice(8);
+    store_domain = store_domain.replace(/\/+$/, ""); // remove trailing slashes
+    console.log(store_domain);
 
     // Check if user exists
     const [existingUser] = await db.query(
@@ -26,6 +33,12 @@ export const signup = async (req, res) => {
     );
     if (existingUser.length > 0) {
       return res.status(400).json({ status: "User already exists" });
+    }
+
+    if (!store_domain.endsWith(".myshopify.com")) {
+      return res
+        .status(400)
+        .json({ status: "wrong domain-name or access-code" });
     }
 
     // Check if tenant exists
@@ -37,6 +50,22 @@ export const signup = async (req, res) => {
       return res.status(400).json({ status: "Tenant already exists" });
     }
 
+    const response = await fetch(
+      `https://${store_domain}/admin/api/2023-10/orders.json?status=any`,
+      {
+        method: "GET",
+        headers: {
+          "X-Shopify-Access-Token": access_token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      return res
+        .status(400)
+        .json({ status: "wrong domain-name or access-code" });
+    }
+
     // Insert new tenant
     const [tenantResult] = await db.query(
       "INSERT INTO tenants (shop_domain, access_token) VALUES (?, ?)",
@@ -45,14 +74,13 @@ export const signup = async (req, res) => {
     const tenantId = tenantResult.insertId;
 
     // Hash password
-    const hashedPassword = bcrypt.hashSync(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert new user
     const [result] = await db.query(
       "INSERT INTO users (email, password, tenant_id) VALUES (?, ?, ?)",
       [email, hashedPassword, tenantId]
     );
-
     // Creating jwt token
     const token = jwtSignUser(result.insertId);
 

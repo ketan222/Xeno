@@ -1,5 +1,5 @@
 import express from "express";
-import { syncProducts } from "../controller/productController.js";
+import { syncProducts, getProducts } from "../controller/productController.js";
 import { protect } from "../controller/userController.js";
 const router = express.Router();
 
@@ -9,4 +9,6 @@ router.get("/status", (req, res) => {
 });
 
 router.post("/syncProducts", protect, syncProducts);
+router.get("/getProducts", protect, getProducts);
+
 export default router;
