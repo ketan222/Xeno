@@ -124,6 +124,7 @@ export const getProducts = async (req, res) => {
 
     // console.log(tenant);
 
+    // fetching the product
     const products = await db.query(
       `
         SELECT * FROM products where tenant_id = ?
@@ -132,6 +133,8 @@ export const getProducts = async (req, res) => {
     );
 
     // console.log(customers);
+
+    // connecting pictures
     for (let product of products[0]) {
       const pictures = await db.query(
         `
