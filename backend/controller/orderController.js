@@ -9,8 +9,6 @@ export const syncOrders = async (req, res) => {
       [req.user.tenant_id]
     );
 
-    // console.log(tenant[0][0]);
-
     // fetch orders from shopify
     const response = await fetch(
       `https://${tenant[0][0].shop_domain}/admin/api/2023-10/orders.json?status=any`,
@@ -28,7 +26,6 @@ export const syncOrders = async (req, res) => {
     // console.log(cols);
 
     const data = await response.json();
-    // console.log(data.orders[0]);
     const orders = data.orders;
 
     // insert or update orders in the database
@@ -94,25 +91,14 @@ export const getOrders = async (req, res) => {
     const db = req.app.locals.db;
     const user = req.user;
     const tenantId = user.tenant_id;
-    // console.log(tenantId);
 
-    const tenant = await db.query(
-      `
-        SELECT * FROM tenants
-      `,
-      [tenantId]
-    );
-
-    // console.log(tenant);
-
+    // fetching orders related to tenantId
     const orders = await db.query(
       `
         SELECT * FROM orders where tenant_id = ?
       `,
       [tenantId]
     );
-
-    // console.log(customers);
 
     res.status(200).json({
       status: "successfully returned the customers",
@@ -122,5 +108,33 @@ export const getOrders = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ status: "Internal server Error" });
+  }
+};
+
+export const getByDate = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const { start, end } = req.body;
+    const tenantId = req.user.tenant_id;
+
+    // get orders based on the dates
+    const [orders] = await db.query(
+      `
+        SELECT * 
+        FROM orders 
+        WHERE tenant_id = ? 
+          AND created_at BETWEEN ? AND ?
+        ORDER BY created_at ASC
+      `,
+      [tenantId, start, end]
+    );
+
+    res.status(200).json({
+      status: "success",
+      orders,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "Internal server error" });
   }
 };

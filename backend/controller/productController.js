@@ -113,26 +113,14 @@ export const getProducts = async (req, res) => {
     const db = req.app.locals.db;
     const user = req.user;
     const tenantId = user.tenant_id;
-    // console.log(tenantId);
 
-    // const tenant = await db.query(
-    //   `
-    //     SELECT * FROM tenants
-    //   `,
-    //   [tenantId]
-    // );
-
-    // console.log(tenant);
-
-    // fetching the product
+    // fetching the products
     const products = await db.query(
       `
         SELECT * FROM products where tenant_id = ?
       `,
       [tenantId]
     );
-
-    // console.log(customers);
 
     // connecting pictures
     for (let product of products[0]) {
@@ -142,7 +130,6 @@ export const getProducts = async (req, res) => {
         `,
         [product.id]
       );
-      // console.log(pictures[0]);
       product.pictures = pictures[0];
     }
 

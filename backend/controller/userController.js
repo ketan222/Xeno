@@ -208,3 +208,42 @@ export const protect = async (req, res, next) => {
     res.status(500).json({ status: "Internal Server Error" });
   }
 };
+
+export const summary = async (req, res, next) => {
+  try {
+    const db = req.app.locals.db;
+
+    const tenantId = req.user.tenant_id;
+
+    // calc total Revenue of tenant
+    const totalRevenue = await db.query(`
+        SELECT sum(total_price) as total FROM orders
+      `);
+
+    // calc total number of customers
+    const totalCustomers = await db.query(
+      `
+        SELECT COUNT(*) as count FROM customers where tenant_id = ?
+      `,
+      [tenantId]
+    );
+
+    // Calc total number of orders placed
+    const totalOrders = await db.query(
+      `
+        SELECT COUNT(*) as count FROM orders WHERE tenant_id = ?
+      `,
+      [tenantId]
+    );
+
+    res.status(200).json({
+      status: "success",
+      totalRevenue: totalRevenue[0][0].total * 1,
+      totalCustomers: totalCustomers[0][0].count,
+      totalOrders: totalOrders[0][0].count,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "Internal server error" });
+  }
+};

@@ -78,25 +78,14 @@ export const getCustomers = async (req, res) => {
     const db = req.app.locals.db;
     const user = req.user;
     const tenantId = user.tenant_id;
-    // console.log(tenantId);
 
-    const tenant = await db.query(
-      `
-        SELECT * FROM tenants
-      `,
-      [tenantId]
-    );
-
-    // console.log(tenant);
-
+    // fetching the customers
     const customers = await db.query(
       `
         SELECT * FROM customers where tenant_id = ?
       `,
       [tenantId]
     );
-
-    // console.log(customers);
 
     res.status(200).json({
       status: "successfully returned the customers",
@@ -105,5 +94,27 @@ export const getCustomers = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(200).json({ status: "cannot get customers" });
+  }
+};
+
+export const getTop5CustomersByMoneySpent = async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const tenantId = req.user.tenant_id;
+
+    // fetching top 5 customers overall
+    const top5 = await db.query(
+      `
+        SELECT * FROM customers 
+        WHERE tenant_id = ? 
+        ORDER BY total_spent DESC 
+        LIMIT 5;
+      `,
+      [tenantId]
+    );
+    res.status(200).json({ status: "success", top5: top5[0] });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: "Internal server error" });
   }
 };

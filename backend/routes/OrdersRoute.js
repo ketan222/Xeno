@@ -1,5 +1,9 @@
 import express from "express";
-import { syncOrders, getOrders } from "../controller/orderController.js";
+import {
+  syncOrders,
+  getOrders,
+  getByDate,
+} from "../controller/orderController.js";
 import { protect } from "../controller/userController.js";
 const router = express.Router();
 
@@ -10,5 +14,5 @@ router.get("/status", (req, res) => {
 
 router.post("/syncOrders", protect, syncOrders);
 router.get("/getOrders", protect, getOrders);
-
+router.post("/getByDate", protect, getByDate);
 export default router;
