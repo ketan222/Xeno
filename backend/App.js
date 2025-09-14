@@ -40,7 +40,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.send("API is Steady..");
 });
 
 // Routes
