@@ -1,7 +1,27 @@
-# Xeno App – Customer & Order Management
+# Xeno App – Customer & Order Analytics Documentation
 
 A full-stack Shopify embedded app built with Node.js, Express, MySQL (as per your DB choice), React frontend, and Shopify Admin APIs.
 This app handles OAuth authentication, listens to Shopify webhooks, stores customers/orders into the database, and provides a dashboard UI for analysing the data.
+
+
+# Assumptions
+
+1.Data Integrity
+Each Shopify store has unique customers identified by customer_id.
+Orders have valid customer_id references in the customers table.
+Product and order prices are stored in the store’s default currency.
+Customers may place multiple orders, but each order has a unique order_number.
+
+2.Application Behavior
+Only core Shopify entities (customers, orders, products) are tracked; optional fields like discounts, shipping, or refunds are not included.
+OAuth tokens are assumed to have sufficient permissions to access customers, orders, and products.
+The app assumes a single tenant per Shopify store. Multi-store management requires multiple tenant records.
+
+3.System Assumptions
+Email authentication is required for app access.
+Data ingestion via Shopify webhooks is eventually consistent; real-time sync may have minor delays.
+Timezone differences between Shopify stores and server are normalized using UTC.
+
 
 🚀 Setup Instructions
 
@@ -73,29 +93,44 @@ vercel --prod
             │  - Customer, Product & Order views │
             │  - Summary extraction reports      │
             └────────────────────────────────────┘
+            
+# Explanation of Flows:
+Webhooks: Shopify pushes updates for customers, orders, and products in real-time.
+Frontend: React dashboard visualizes metrics such as orders by date, top customers, and revenue trends.
 
-# 📡 API Endpoints
-Webhooks
-1. POST /webhooks/orders/create => Triggered when a new order is created in shopify
-2. POST /webhooks/products/create => Triggered when a new product is created in shopify
-3. POST /webhooks/products/update => Triggered when a product is updated in shopify
-4. POST /webhooks/products/delete => Triggered when a product is deleted in shopify
-5. POST /webhooks/customers/create => Triggered when a new customers is created in shopify
-6. POST /webhooks/customers/update => Triggered when a customer is updated in shopify
-7. POST /webhooks/customers/delete => Triggered when a customer is deleted in shopify
 
-Auth
-1. POST /api/auth/login => Triggered when trying to login to an existing account
-2. POST /api/auth/signup => Triggered when trying to create a new  account
-3. POST /api/auth/getSummary => Triggered when trying to get data of account's stores from shopify
+# 📡 APIs and Data Models
 
-Data Retreval
-1. api/customer/getCustomers => Triggered when trying to get all the customers of the current user
-2. api/customer/getTop5CustomersByMoneySpent => Triggered when trying to get top 5 customers via money spent
-3. api/orders/getOrders => Triggered when trying to get all orders of the current user
-4. api/products/getProducts => Triggered when trying to get all the products of current user
-5. /sendMail    => Triggered when trying to send OTP at the time of signup to users gmail.
-6. api/orders/getByDate => Triggered when trying to get orders between 2 dates
+1. Webhooks
+| Endpoint                          | Description                              |
+| --------------------------------- | ---------------------------------------- |
+| POST `/webhooks/orders/create`    | Triggered when a new order is created    |
+| POST `/webhooks/products/create`  | Triggered when a new product is created  |
+| POST `/webhooks/products/update`  | Triggered when a product is updated      |
+| POST `/webhooks/products/delete`  | Triggered when a product is deleted      |
+| POST `/webhooks/customers/create` | Triggered when a new customer is created |
+| POST `/webhooks/customers/update` | Triggered when a customer is updated     |
+| POST `/webhooks/customers/delete` | Triggered when a customer is deleted     |
+
+
+2. Authentication
+| Endpoint                    | Request                                           | Response                                           | Notes                         |
+| --------------------------- | ------------------------------------------------- | -------------------------------------------------- | ----------------------------- |
+| POST `/api/auth/login`      | `{ email, password }`                             | `{ token }`                                        | Returns JWT token for session |
+| POST `/api/auth/signup`     | `{ email, password, store_domain, access_token }` | `{ token }`                                        | Creates new user account      |
+| POST `/api/auth/getSummary` | `{ store_domain }`                                | `{ total_customers, total_orders, total_revenue }` | Returns summary metrics       |
+
+
+3. Data Retreval
+| Endpoint                                         | Request                  | Response             | Notes                        |
+| ------------------------------------------------ | ------------------------ | -------------------- | ---------------------------- |
+| GET `/api/customer/getCustomers`                 | -                        | List of customers    | Filter by tenant             |
+| GET `/api/customer/getTop5CustomersByMoneySpent` | -                        | Top 5 customers      | Sorted by total spend        |
+| GET `/api/orders/getOrders`                      | -                        | List of all orders   | For dashboard visualizations |
+| POST `/api/orders/getByDate`                     | `{ startDate, endDate }` | List of orders       | Filter orders by date        |
+| GET `/api/products/getProducts`                  | -                        | List of all products | For inventory and analysis   |
+| POST `/sendMail`                                 | `{ email }`              | `{ otp }`            | Sends OTP for signup         |
+
 
 
 # 🗄️ Database Schema
@@ -182,3 +217,11 @@ Data Retreval
 # Known Limitations / Assumptions
 1. The database schema is simplified (only core fields stored).
 2. Only customers and orders are being tracked; products and inventory not yet integrated.
+
+# Next Steps to Productionize
+1. Authentication & Security
+2. Add rate-limiting for API endpoints.
+3. Data Sync & Reliability
+4. Use background jobs (e.g., BullMQ) to process large webhook events asynchronously.
+5. Implement retry logic for failed webhooks.
+6. Paginate orders and products API responses for performance.
