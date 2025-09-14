@@ -39,6 +39,12 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
+
+// Routes
+
 app.use("/api/auth", AuthRoute);
 app.use("/api/customer", CustomerRoute);
 app.use("/api/orders", OrdersRoute);
