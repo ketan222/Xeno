@@ -133,15 +133,16 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 
 
 
-# 🗄️ Database Schema
-1. Tenants Table
-| Field         | Type         | Notes                                   |
-| ------------- | ------------ | --------------------------------------- |
-| id            | INT (PK)     | Auto-increment tenant ID                |
-| shop\_domain  | VARCHAR(255) | Shopify shop domain (unique)            |
-| access\_token | TEXT         | OAuth token for API requests (nullable) |
-| oauth\_state  | VARCHAR(255) | Used for CSRF protection during OAuth   |
-| created\_at   | TIMESTAMP    | Auto timestamp                          |
+# 🗄️ Database Schema 
+
+1. Tenants Table 
+| Field         | Type         | Notes                                   | 
+| ------------- | ------------ | --------------------------------------- | 
+| id            | INT (PK)     | Auto-increment tenant ID                | 
+| shop\_domain  | VARCHAR(255) | Shopify shop domain (unique)            | 
+| access\_token | TEXT         | OAuth token for API requests (nullable) | 
+| oauth\_state  | VARCHAR(255) | Used for CSRF protection during OAuth   | 
+| created\_at   | TIMESTAMP    | Auto timestamp                          | 
 
 2. Users Table
 | Field       | Type         | Notes                                        |
