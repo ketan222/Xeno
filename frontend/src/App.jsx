@@ -9,7 +9,7 @@ function App() {
     <ContextProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<DashBoard />} />
+          <Route path="/" element={<login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<DashBoard />} />
