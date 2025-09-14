@@ -1,4 +1,4 @@
-export const syncProducts = async (req, res) => {
+export const syncProducts = async (req, res, next) => {
   try {
     const db = req.app.locals.db;
 
@@ -6,7 +6,7 @@ export const syncProducts = async (req, res) => {
       show columns from products
       `);
 
-    console.log(result[0].forEach((ele) => console.log(ele.Field)));
+    // console.log(result[0].forEach((ele) => console.log(ele.Field)));
     // fetch products from Shopify
 
     const tenant = await db.query(
@@ -15,6 +15,8 @@ export const syncProducts = async (req, res) => {
       `,
       [req.user.tenant_id]
     );
+
+    // insert or update products in the database
 
     // console.log(tenant[0][0]);
     const response = await fetch(
@@ -99,9 +101,8 @@ export const syncProducts = async (req, res) => {
       }
     }
 
-    // insert or update products in the database
-
-    res.status(200).json({ status: "Products synced successfully" });
+    next();
+    // res.status(200).json({ status: "Products synced successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ status: "Failed to sync products" });

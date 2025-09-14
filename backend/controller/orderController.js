@@ -1,4 +1,4 @@
-export const syncOrders = async (req, res) => {
+export const syncOrders = async (req, res, next) => {
   try {
     const db = req.app.locals.db;
 
@@ -79,7 +79,8 @@ export const syncOrders = async (req, res) => {
         ]
       );
     }
-    res.status(200).json({ status: "Orders synced successfully" });
+    next();
+    // res.status(200).json({ status: "Orders synced successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: "Internal Server Error" });

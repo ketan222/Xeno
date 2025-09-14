@@ -30,7 +30,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-console.log("CORS ORIGIN:", process.env.FRONTEND);
+// console.log("CORS ORIGIN:", process.env.FRONTEND);
 app.use(
   cors({
     origin: `${process.env.FRONTEND}`, // Vite dev server

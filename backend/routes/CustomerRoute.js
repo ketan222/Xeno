@@ -12,8 +12,8 @@ router.get("/status", (req, res) => {
   res.status(200).json({ status: "OK" });
 });
 
-// Synchronizing the customers
-router.post("/syncCustomers", protect, syncCustomers);
+// // Inserting and Updating the customers
+// router.post("/syncCustomers", protect, syncCustomers);
 
 // route for fetching all the customers that have placed order with current tenant
 router.get("/getCustomers", protect, getCustomers);

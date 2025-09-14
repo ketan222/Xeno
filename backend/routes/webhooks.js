@@ -8,7 +8,7 @@ router.post("/orders/create", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const order = req.body;
-    console.log("✅ New Order Webhook:", order.id);
+    // console.log("✅ New Order Webhook:", order.id);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or order.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -78,7 +78,7 @@ router.post("/products/create", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const product = req.body;
-    console.log("✅ New product Webhook:", product.id);
+    // console.log("✅ New product Webhook:", product.id);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or product.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -161,7 +161,7 @@ router.post("/products/update", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const product = req.body;
-    console.log("✅ New products Webhook:", product.id);
+    // console.log("✅ New products Webhook:", product.id);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or products.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -246,7 +246,7 @@ router.post("/products/delete", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const product = req.body;
-    console.log("✅ New product Webhook:", product.id);
+    // console.log("✅ New product Webhook:", product.id);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or product.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -282,7 +282,7 @@ router.post("/customers/create", async (req, res) => {
     const db = req.app.locals.db;
     const customer = req.body;
     // console.log(customer);
-    console.log("✅ New customer Webhook:", customer.id);
+    // console.log("✅ New customer Webhook:", customer.id);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or order.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -336,7 +336,7 @@ router.post("/customers/update", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const customer = req.body.line_items[0];
-    console.log("✅ New customer Webhook:", customer);
+    // console.log("✅ New customer Webhook:", customer);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or customer.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -390,7 +390,7 @@ router.post("/customers/delete", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const customer = req.body;
-    console.log("✅ New customer Webhook:", customer.id);
+    // console.log("✅ New customer Webhook:", customer.id);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or order.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",

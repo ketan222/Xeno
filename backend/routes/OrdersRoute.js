@@ -7,12 +7,19 @@ import {
 import { protect } from "../controller/userController.js";
 const router = express.Router();
 
+// Status route
 router.get("/status", (req, res) => {
-  //   console.log(req.app.locals.db);
   res.status(200).json({ status: "orders route ok" });
 });
 
-router.post("/syncOrders", protect, syncOrders);
+// Inserting and updating the orders
+// router.post("/syncOrders", protect, syncOrders);
+
+// Fetching all the orders
+// router.get("/getOrders", protect, syncOrders, getOrders);
 router.get("/getOrders", protect, getOrders);
+
+// Fetching all the order between 2 dates
 router.post("/getByDate", protect, getByDate);
+
 export default router;

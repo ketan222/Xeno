@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     try {
@@ -25,12 +27,13 @@ export default function SignUp() {
           }),
         }
       );
-      console.log(response);
+      //   console.log(response);
       if (!response.ok) throw new Error(response.statusText);
       const data = await response.json();
-      console.log(data);
+      //   console.log(data);
       localStorage.setItem("user-jwt", data.token);
       alert("Login successful! Welcome back.");
+      navigate("/dashboard");
     } catch (err) {
       alert(err.message);
     }

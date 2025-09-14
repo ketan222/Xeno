@@ -237,11 +237,20 @@ export const summary = async (req, res, next) => {
       [tenantId]
     );
 
+    // calc total number of products
+    const totalProducts = await db.query(
+      `
+        SELECT COUNT(*) as count FROM products WHERE tenant_id = ?
+      `,
+      [tenantId]
+    );
+
     res.status(200).json({
       status: "success",
       totalRevenue: totalRevenue[0][0].total * 1,
       totalCustomers: totalCustomers[0][0].count,
       totalOrders: totalOrders[0][0].count,
+      totalProducts: totalProducts[0][0].count,
     });
   } catch (err) {
     console.log(err);

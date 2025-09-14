@@ -1,4 +1,4 @@
-export const syncCustomers = async (req, res) => {
+export const syncCustomers = async (req, res, next) => {
   try {
     const db = req.app.locals.db;
 
@@ -9,7 +9,7 @@ export const syncCustomers = async (req, res) => {
       [req.user.tenant_id]
     );
 
-    console.log(tenant[0][0]);
+    // console.log(tenant[0][0]);
 
     // fetch customers from Shopify
     const response = await fetch(
@@ -65,8 +65,8 @@ export const syncCustomers = async (req, res) => {
 
     // const result = await db.query("select * from customers");
     // console.log(result[0]);
-
-    res.status(200).json({ status: "Customers synced successfully" });
+    next();
+    // res.status(200).json({ status: "Customers synced successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: "Internal Server Error" });
