@@ -4,7 +4,9 @@ import AuthRoute from "./routes/AuthRoute.js";
 import CustomerRoute from "./routes/CustomerRoute.js";
 import OrdersRoute from "./routes/OrdersRoute.js";
 import ProductRoute from "./routes/ProductRoute.js";
-import WebhookRoute from "./routes/webhooks.js"; // <-- add this
+import WebhookRoute from "./routes/webhooks.js";
+import cors from "cors";
+import { sendOTP } from "./mail.js";
 
 const app = express();
 
@@ -26,10 +28,23 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+app.use(
+  cors({
+    origin: `${process.env.FRONTEND}`, // Vite dev server
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
 app.use("/api/auth", AuthRoute);
 app.use("/api/customer", CustomerRoute);
 app.use("/api/orders", OrdersRoute);
 app.use("/api/products", ProductRoute);
 app.use("/webhooks", WebhookRoute); // <-- mount webhook route
+app.post("/sendMail", async (req, res) => {
+  const email = req.body.email;
+  const otp = await sendOTP(email);
+  res.status(200).json({ otp });
+});
 
 export default app;
