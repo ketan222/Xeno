@@ -8,7 +8,7 @@ router.post("/orders/create", async (req, res) => {
   try {
     const db = req.app.locals.db;
     const order = req.body;
-    // console.log("✅ New Order Webhook:", order.id);
+    console.log("✅ New Order Webhook:", order);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or order.shop_domain in payload
     const [tenant] = await db.query(
       "SELECT * FROM tenants WHERE shop_domain = ?",
@@ -335,7 +335,7 @@ router.post("/customers/create", async (req, res) => {
 router.post("/customers/update", async (req, res) => {
   try {
     const db = req.app.locals.db;
-    const customer = req.body.line_items[0];
+    const customer = req.body;
     // console.log("✅ New customer Webhook:", customer);
     const shopDomain = req.headers["x-shopify-shop-domain"]; // or customer.shop_domain in payload
     const [tenant] = await db.query(

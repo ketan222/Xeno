@@ -81,6 +81,40 @@ export const signup = async (req, res) => {
       "INSERT INTO users (email, password, tenant_id) VALUES (?, ?, ?)",
       [email, hashedPassword, tenantId]
     );
+
+    const topics = [
+      "webhooks/orders/create",
+      "webhooks/products/create",
+      "webhooks/products/update",
+      "webhooks/products/delete",
+      "webhooks/customers/create",
+      "webhooks/customers/update",
+      "webhooks/customers/delete",
+    ];
+
+    for (const topic of topics) {
+      await fetch(
+        `https://${process.env.HOST}/admin/api/2025-01/webhooks.json`,
+        {
+          method: "POST",
+          headers: {
+            "X-Shopify-Access-Token": accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            webhook: {
+              topic,
+              address: `${process.env.APP_URL}/webhooks/${topic.replace(
+                "/",
+                "_"
+              )}`,
+              format: "json",
+            },
+          }),
+        }
+      );
+    }
+
     // Creating jwt token
     const token = jwtSignUser(result.insertId);
 

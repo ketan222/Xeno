@@ -104,6 +104,7 @@ export default function SignUp() {
       //   console.log("did enter");
       const data = await response.json();
       localStorage.setItem("user-jwt", data.token);
+
       alert("Signup successful!");
       navigate("/dashboard");
     } catch (err) {
