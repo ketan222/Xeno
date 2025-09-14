@@ -1,4 +1,4 @@
-# Xeno App – Customer & Order Analytics Documentation
+# Xeno App – Customer & Order Analytics Documentation 
 
 A full-stack Shopify embedded app built with Node.js, Express, MySQL (as per your DB choice), React frontend, and Shopify Admin APIs.
 This app handles OAuth authentication, listens to Shopify webhooks, stores customers/orders into the database, and provides a dashboard UI for analysing the data.
