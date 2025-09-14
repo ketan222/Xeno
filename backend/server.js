@@ -21,9 +21,9 @@ async function startServer() {
     console.log("Database connected");
 
     // Drop existing tables for a fresh start (for development purposes)
-    // await db.query(`
-    // DROP TABLE IF EXISTS tenants, orders, customers, pictures, products, stores, users;`);
-    // console.log("Dropped existing customers table");
+    await db.query(`
+    DROP TABLE IF EXISTS tenants, orders, customers, pictures, products, stores, users;`);
+    console.log("Dropped existing customers table");
 
     // Tenants table
     await db.query(`

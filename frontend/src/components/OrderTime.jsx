@@ -1,7 +1,6 @@
 import { useCont } from "../useContext/Context";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
@@ -17,26 +16,15 @@ export default function OrderTime() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  // Group orders by day (YYYY-MM-DD)
-  const ordersByDay = orders.reduce((acc, order) => {
-    const date = new Date(order.created_at);
-    const day = date.toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }); // e.g. "09 Sep 2025"
-    acc[day] = (acc[day] || 0) + 1;
-    return acc;
-  }, {});
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    try {
-      async function getOrders() {
-        // fetching orders
+    async function getOrders() {
+      try {
         const token = localStorage.getItem("user-jwt");
         if (!token) {
           throw new Error("No token found, please login.");
-          //   navigate("/login");
         }
         setLoading(true);
         const response = await fetch(
@@ -51,21 +39,43 @@ export default function OrderTime() {
         );
         if (!response.ok) throw new Error(response.statusText);
         const orderData = await response.json();
-        // console.log(orderData);
         ordersUpdate(orderData.orders);
+      } catch (err) {
+        alert(err.message);
+        navigate("/login");
+      } finally {
+        setLoading(false);
       }
-      getOrders();
-    } catch (err) {
-      alert(err.message);
-      navigate("/login");
-    } finally {
-      setLoading(false);
     }
+    getOrders();
   }, []);
 
   if (loading) return <p>Loading...</p>;
 
-  // Convert to array for Recharts
+  // filter orders by date range
+  const filteredOrders = orders.filter((order) => {
+    const orderDate = new Date(order.created_at);
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
+    if (start && orderDate < start) return false;
+    if (end && orderDate > end) return false;
+    return true;
+  });
+
+  // group filtered orders by day
+  const ordersByDay = filteredOrders.reduce((acc, order) => {
+    const date = new Date(order.created_at);
+    const day = date.toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    acc[day] = (acc[day] || 0) + 1;
+    return acc;
+  }, {});
+
+  // convert to array for Recharts
   const data = Object.entries(ordersByDay).map(([day, count]) => ({
     day,
     orders: count,
@@ -74,6 +84,29 @@ export default function OrderTime() {
   return (
     <article className="w-full h-full bg-white p-5 rounded-md shadow-sm">
       <h2 className="text-xl font-bold mb-4">Orders by Day</h2>
+
+      {/* Date inputs */}
+      <div className="flex gap-4 mb-4">
+        <div>
+          <label className="block text-sm font-medium">Start Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">End Date</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
+      </div>
+
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
