@@ -21,7 +21,7 @@ export default function Top5Customers() {
       async function fetchData() {
         const url = `${
           import.meta.env.VITE_BACKEND_URL
-        }/api/customer/getTop5CustomersByMoneySpent`;
+        }/api/customer/getCustomers`;
         const token = localStorage.getItem("user-jwt");
         if (!token) {
           throw new Error("No token found, please login.");
