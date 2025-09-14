@@ -42,9 +42,14 @@ app.use("/api/orders", OrdersRoute);
 app.use("/api/products", ProductRoute);
 app.use("/webhooks", WebhookRoute); // <-- mount webhook route
 app.post("/sendMail", async (req, res) => {
-  const email = req.body.email;
-  const otp = await sendOTP(email);
-  res.status(200).json({ otp });
+  try {
+    const email = req.body.email;
+    const otp = await sendOTP(email);
+    res.status(200).json({ otp });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ error: "Failed to send OTP" });
+  }
 });
 
 export default app;
