@@ -100,7 +100,7 @@ export default function SignUp() {
           }),
         }
       );
-      if (!response.ok) throw new Error(response.status);
+      if (!response.ok) throw new Error(response.statusText);
       //   console.log("did enter");
       const data = await response.json();
       localStorage.setItem("user-jwt", data.token);

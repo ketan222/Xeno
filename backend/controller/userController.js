@@ -81,7 +81,6 @@ export const signup = async (req, res) => {
       "INSERT INTO users (email, password, tenant_id) VALUES (?, ?, ?)",
       [email, hashedPassword, tenantId]
     );
-
     const topics = [
       "webhooks/orders/create",
       "webhooks/products/create",
@@ -92,6 +91,7 @@ export const signup = async (req, res) => {
       "webhooks/customers/delete",
     ];
 
+    console.log(store_domain, access_token, process.env.HOST);
     for (const topic of topics) {
       await fetch(`https://${store_domain}/admin/api/2025-01/webhooks.json`, {
         method: "POST",
