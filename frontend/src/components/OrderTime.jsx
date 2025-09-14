@@ -93,7 +93,7 @@ export default function OrderTime() {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full text-black"
           />
         </div>
         <div>
@@ -102,7 +102,7 @@ export default function OrderTime() {
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border p-2 rounded w-full"
+            className="border p-2 rounded w-full text-black"
           />
         </div>
       </div>
