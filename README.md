@@ -111,7 +111,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 | POST `/webhooks/customers/create` | Triggered when a new customer is created |  
 | POST `/webhooks/customers/update` | Triggered when a customer is updated     |  
 | POST `/webhooks/customers/delete` | Triggered when a customer is deleted     |  
-
+ 
 
 2. Authentication
 | Endpoint                    | Request                                           | Response                                           | Notes                         |  
