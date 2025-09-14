@@ -93,26 +93,20 @@ export const signup = async (req, res) => {
     ];
 
     for (const topic of topics) {
-      await fetch(
-        `https://${process.env.HOST}/admin/api/2025-01/webhooks.json`,
-        {
-          method: "POST",
-          headers: {
-            "X-Shopify-Access-Token": accessToken,
-            "Content-Type": "application/json",
+      await fetch(`https://${store_domain}/admin/api/2025-01/webhooks.json`, {
+        method: "POST",
+        headers: {
+          "X-Shopify-Access-Token": access_token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          webhook: {
+            topic,
+            address: `${process.env.HOST}/webhooks/${topic.replace("/", "_")}`,
+            format: "json",
           },
-          body: JSON.stringify({
-            webhook: {
-              topic,
-              address: `${process.env.APP_URL}/webhooks/${topic.replace(
-                "/",
-                "_"
-              )}`,
-              format: "json",
-            },
-          }),
-        }
-      );
+        }),
+      });
     }
 
     // Creating jwt token
