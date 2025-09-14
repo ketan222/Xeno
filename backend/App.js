@@ -7,6 +7,8 @@ import ProductRoute from "./routes/ProductRoute.js";
 import WebhookRoute from "./routes/webhooks.js";
 import cors from "cors";
 import { sendOTP } from "./mail.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -28,6 +30,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+console.log("CORS ORIGIN:", process.env.FRONTEND);
 app.use(
   cors({
     origin: `${process.env.FRONTEND}`, // Vite dev server

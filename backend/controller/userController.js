@@ -104,12 +104,13 @@ export const signup = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ status: "Internal Server Error", token });
+    res.status(500).json({ status: "Internal Server Error" });
   }
 };
 
 export const login = async (req, res) => {
   try {
+    // console.log("here");
     const db = req.app.locals.db;
 
     const { email, password } = req.body;

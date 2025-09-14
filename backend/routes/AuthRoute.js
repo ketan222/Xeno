@@ -17,7 +17,7 @@ router.get("/status", (req, res) => {
 router.post("/signup", signup);
 
 // Login route
-router.post("/login", protect, login);
+router.post("/login", login);
 
 // tenant summary route
 router.get("/summary", protect, summary);
