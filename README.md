@@ -102,8 +102,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 # 📡 APIs and Data Models
 
 1. Webhooks
-| Endpoint                          | Description                              |  
-| --------------------------------- | ---------------------------------------- |  
+| Endpoint                          | Description                              |
 | POST `/webhooks/orders/create`    | Triggered when a new order is created    |  
 | POST `/webhooks/products/create`  | Triggered when a new product is created  |  
 | POST `/webhooks/products/update`  | Triggered when a product is updated      |  
@@ -114,16 +113,14 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
  
 
 2. Authentication
-| Endpoint                    | Request                                           | Response                                           | Notes                         |  
-| --------------------------- | ------------------------------------------------- | -------------------------------------------------- | ----------------------------- |  
+| Endpoint                    | Request                                           | Response                                           | Notes                         |   
 | POST `/api/auth/login`      | `{ email, password }`                             | `{ token }`                                        | Returns JWT token for session |  
 | POST `/api/auth/signup`     | `{ email, password, store_domain, access_token }` | `{ token }`                                        | Creates new user account      |  
 | POST `/api/auth/getSummary` | `{ store_domain }`                                | `{ total_customers, total_orders, total_revenue }` | Returns summary metrics       |  
 
 
 3. Data Retreval  
-| Endpoint                                         | Request                  | Response             | Notes                        |  
-| ------------------------------------------------ | ------------------------ | -------------------- | ---------------------------- |  
+| Endpoint                                         | Request                  | Response             | Notes                        |
 | GET `/api/customer/getCustomers`                 | -                        | List of customers    | Filter by tenant             |  
 | GET `/api/customer/getTop5CustomersByMoneySpent` | -                        | Top 5 customers      | Sorted by total spend        |  
 | GET `/api/orders/getOrders`                      | -                        | List of all orders   | For dashboard visualizations |  
@@ -136,8 +133,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 # 🗄️ Database Schema   
 
 1. Tenants Table   
-| Field         | Type         | Notes                                   |   
-| ------------- | ------------ | --------------------------------------- |   
+| Field         | Type         | Notes                                   |    
 | id            | INT (PK)     | Auto-increment tenant ID                |   
 | shop\_domain  | VARCHAR(255) | Shopify shop domain (unique)            |   
 | access\_token | TEXT         | OAuth token for API requests (nullable) |   
@@ -145,8 +141,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 | created\_at   | TIMESTAMP    | Auto timestamp                          |   
   
 2. Users Table  
-| Field       | Type         | Notes                                        |  
-| ----------- | ------------ | -------------------------------------------- |  
+| Field       | Type         | Notes                                        |   
 | id          | INT (PK)     | Auto-increment user ID                       |  
 | tenant\_id  | INT (FK)     | References tenants(id)                       |  
 | email       | VARCHAR(255) | Unique user email                            |  
@@ -155,8 +150,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 | updated\_at | DATETIME     | Updates automatically on record modification |  
   
 3. Customers Table  
-| Field           | Type          | Notes                          |  
-| --------------- | ------------- | ------------------------------ |  
+| Field           | Type          | Notes                          |    
 | id              | BIGINT (PK)   | Shopify customer ID            |  
 | tenant\_id      | INT (FK)      | References tenants(id)         |  
 | email           | VARCHAR(255)  | Customer email                 |  
@@ -171,8 +165,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 | updated\_at     | DATETIME      | Shopify timestamp              |  
   
 4. Products Table  
-| Field               | Type          | Notes                      |  
-| ------------------- | ------------- | -------------------------- |  
+| Field               | Type          | Notes                      |   
 | id                  | BIGINT (PK)   | Shopify product ID         |  
 | tenant\_id          | INT (FK)      | References tenants(id)     |  
 | title               | VARCHAR(255)  | Product title              |  
@@ -186,8 +179,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 | updated\_at         | DATETIME      | Shopify timestamp          |  
   
 6. Pictures Table  
-| Field       | Type         | Notes                                  |  
-| ----------- | ------------ | -------------------------------------- |  
+| Field       | Type         | Notes                                  |   
 | id          | BIGINT (PK)  | Shopify image ID                       |  
 | product\_id | BIGINT (FK)  | References products(id)                |  
 | src         | VARCHAR(500) | Image URL                              |  
@@ -199,8 +191,7 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 | updated\_at | DATETIME     | Shopify timestamp                      |  
   
 7. Orders Table  
-| Field           | Type          | Notes                                |  
-| --------------- | ------------- | ------------------------------------ |  
+| Field           | Type          | Notes                                |   
 | id              | BIGINT (PK)   | Shopify order ID                     |  
 | tenant\_id      | INT (FK)      | References tenants(id)               |  
 | customer\_id    | BIGINT (FK)   | References customers(id)             |  
