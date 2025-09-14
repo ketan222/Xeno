@@ -1,4 +1,4 @@
-Xeno App – Customer & Order Management
+# Xeno App – Customer & Order Management
 
 A full-stack Shopify embedded app built with Node.js, Express, MySQL (as per your DB choice), React frontend, and Shopify Admin APIs.
 This app handles OAuth authentication, listens to Shopify webhooks, stores customers/orders into the database, and provides a dashboard UI for analysing the data.
@@ -33,16 +33,16 @@ Create a .env file in the Backend directory:
 13. EMAIL_PASS=APPLICATION_PASSWORD_OF_GMAIL
 
 # Installation
-# Install dependencies  
+Install dependencies  
 npm install  
 
-# Run locally frontend
+Run locally frontend
 npm run dev  
 
-# Run locally backend
+Run locally backend
 nodemon server.js / node server.js  
 
-# Deploy to Vercel (with vercel.json configured)  
+Deploy to Vercel (with vercel.json configured)  
 vercel --prod  
 
 
