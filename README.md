@@ -102,15 +102,15 @@ Frontend: React dashboard visualizes metrics such as orders by date, top custome
 # 📡 APIs and Data Models
 
 1. Webhooks
-| Endpoint                          | Description                              |
-| --------------------------------- | ---------------------------------------- |
-| POST `/webhooks/orders/create`    | Triggered when a new order is created    |
-| POST `/webhooks/products/create`  | Triggered when a new product is created  |
-| POST `/webhooks/products/update`  | Triggered when a product is updated      |
-| POST `/webhooks/products/delete`  | Triggered when a product is deleted      |
-| POST `/webhooks/customers/create` | Triggered when a new customer is created |
-| POST `/webhooks/customers/update` | Triggered when a customer is updated     |
-| POST `/webhooks/customers/delete` | Triggered when a customer is deleted     |
+| Endpoint                          | Description                              |  
+| --------------------------------- | ---------------------------------------- |  
+| POST `/webhooks/orders/create`    | Triggered when a new order is created    |  
+| POST `/webhooks/products/create`  | Triggered when a new product is created  |  
+| POST `/webhooks/products/update`  | Triggered when a product is updated      |  
+| POST `/webhooks/products/delete`  | Triggered when a product is deleted      |  
+| POST `/webhooks/customers/create` | Triggered when a new customer is created |  
+| POST `/webhooks/customers/update` | Triggered when a customer is updated     |  
+| POST `/webhooks/customers/delete` | Triggered when a customer is deleted     |  
 
 
 2. Authentication
